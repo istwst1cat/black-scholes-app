@@ -3,7 +3,7 @@
 
 An institutional-grade, production-optimized quantitative finance engine and risk simulation dashboard built completely from scratch. This standalone terminal evaluates European-style derivative structures, computes high-precision risk vulnerabilities (the Greeks), extracts implied parameters via numerical methods, and models multi-dimensional risk matrices across live assets.
 
-Developed independently by **Issac Qaiser** as a cornerstone portfolio display for undergraduate admission and scholarship evaluation at **Brandeis University**.
+Developed independently by **Issac Qaiser** as a cornerstone portfolio display for university evaluation.
 
 ---
 
