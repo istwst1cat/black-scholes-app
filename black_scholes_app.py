@@ -15,7 +15,7 @@ st.set_page_config(
 
 # ---------------- HEADER ----------------
 st.title("📈 Black-Scholes Option Pricing Dashboard")
-st.caption("Developed by Issac Qaiser • Live Market Feeds • Payoff • Greeks • IV Scanner • Heatmaps")
+st.caption(" Developed by Issac Qaiser | Live Market Feeds | Payoff | Greeks | IV Scanner | Heatmaps")
 
 # ---------------- SIDEBAR INPUTS ----------------
 st.sidebar.header("Live Market Data Feed")
@@ -256,4 +256,4 @@ with hp:
 
 # ---------------- FOOTER ----------------
 st.markdown("---")
-st.caption("Black-Scholes Dashboard • Live Market Feeds • Payoff • Greeks • IV Scanner • Heatmaps")
+st.caption("Black-Scholes Dashboard | Live Market Feeds | Payoff | Greeks | IV Scanner")
