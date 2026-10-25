@@ -12,9 +12,11 @@ An independent quantitative finance dashboard engineered from scratch to evaluat
 ## The Mathematical Framework
 
 The engine models asset coordinates assuming a log-normal distribution:
-\[d_1 = \frac{\ln(S_0 / K) + (r + \sigma^2 / 2)T}{\sigma \sqrt{T}}\]
-\[d_2 = d_1 - \sigma \sqrt{T}\]
-
+```math
+d1 = (ln(S0 / K) + (r + (sigma^2) / 2) * T) / (sigma * sqrt(T))
+d2 = d1 - sigma * sqrt(T)
+```
+ 
 ### Pricing & Greeks
 Calculates theoretical premiums (Call/Put) and partial derivatives for Delta, Gamma, Vega, Theta, and Rho using standard normal distribution statistics.
 
