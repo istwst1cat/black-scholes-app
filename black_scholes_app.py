@@ -1,34 +1,33 @@
 import streamlit as st
 import numpy as np
-import yfinance as yf  # Added for live global market data feeds
+import yfinance as yf
 from math import log, sqrt, exp
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# PAGE CONFIG 
+# App layout config
 st.set_page_config(
     page_title="Black-Scholes Option Pricing Model",
     page_icon="📈",
     layout="wide",
 )
 
-#  HEADER 
+# UI Main Header
 st.title("📈 Black-Scholes Option Pricing Dashboard")
-st.caption(" Developed by Issac Qaiser | Live Market Feeds | Payoff | Greeks | IV Scanner | Heatmaps")
+st.caption("Developed by Issac Qaiser | Live Market Feeds | Payoff | Greeks | IV Scanner | Heatmaps")
 
-#  SIDEBAR INPUTS 
+# Sidebar inputs setup
 st.sidebar.header("Live Market Data Feed")
 
-# Interactive ticker lookup text input
+# User ticker entry
 ticker_input = st.sidebar.text_input("Stock Ticker Symbol", value="AAPL").upper().strip()
 
-# Background API data fetch engine
+# Fetch stock price from Yahoo Finance API
 live_price = 100.0
 if ticker_input:
     try:
         ticker_data = yf.Ticker(ticker_input)
-        # Safely pull the most recent closing price from the live global market feed
         todays_data = ticker_data.history(period="1d")
         if not todays_data.empty:
             live_price = float(todays_data['Close'].iloc[-1])
@@ -64,7 +63,7 @@ vol_min = st.sidebar.number_input("Min Vol (Heatmap)", value=0.10)
 vol_max = st.sidebar.number_input("Max Vol (Heatmap)", value=0.30)
 grid = st.sidebar.slider("Grid Resolution", 20, 50, 30)
 
-#  BLACK-SCHOLES CORE ENGINE 
+# Black-Scholes mathematical calculations
 def bs(S, K, T, sigma, r):
     d1 = (log(S/K) + (r + 0.5*sigma**2)*T) / (sigma*sqrt(T))
     d2 = d1 - sigma*sqrt(T)
@@ -87,7 +86,7 @@ def bs(S, K, T, sigma, r):
 
 res = bs(S, K, T, sigma, r)
 
-#   IV SCANNER FUNCTIONS 
+# Newton-Raphson implied volatility estimation for calls
 def implied_vol_call(S, K, T, r, market_price):
     sigma_est = 0.2
     for _ in range(100):
@@ -101,6 +100,7 @@ def implied_vol_call(S, K, T, r, market_price):
         sigma_est -= diff / v
     return max(sigma_est, 0.0)
 
+# Newton-Raphson implied volatility estimation for puts
 def implied_vol_put(S, K, T, r, market_price):
     sigma_est = 0.2
     for _ in range(100):
@@ -114,6 +114,7 @@ def implied_vol_put(S, K, T, r, market_price):
         sigma_est -= diff / v
     return max(sigma_est, 0.0)
 
+# Output labels for volatility levels
 def iv_label(iv):
     if iv <= 0.001:
         return "N/A (Theoretical Error) ⚪", "gray"
@@ -124,12 +125,12 @@ def iv_label(iv):
     else:
         return "HIGH 🔴", "red"
 
-# TOP METRICS PANEL 
+# Show main pricing panels
 col1, col2 = st.columns(2)
 col1.success(f"CALL Value: ${res['call']:.2f}")
 col2.error(f"PUT Value: ${res['put']:.2f}")
 
-#  P&L TRACKING 
+# Calculate trade metrics
 st.subheader("P&L Tracking")
 
 model_price = res["call"] if "Call" in position else res["put"]
@@ -155,7 +156,7 @@ col2.metric("Premium", f"${premium:.2f}")
 col3.metric("P&L", f"${pnl:.2f}")
 col3.markdown(f"<span style='color:{pnl_color}; font-weight:bold;'>{pnl_text} {pnl_arrow}</span>", unsafe_allow_html=True)
 
-#  PAYOFF DIAGRAM 
+# Generate option payoff chart
 st.subheader("Payoff Diagram")
 
 spots = np.linspace(payoff_min, payoff_max, 200)
@@ -176,7 +177,7 @@ ax.set_ylabel("P&L")
 ax.set_title(f"Payoff Diagram • {position}")
 st.pyplot(fig)
 
-# GREEKS MATRIX 
+# Show options risk Greeks metrics
 st.subheader("Greeks")
 
 g1, g2, g3, g4 = st.columns(4)
@@ -191,7 +192,7 @@ g5, g6 = st.columns(2)
 g5.metric("Rho (Call)", f"{res['rho_c']:.4f}")
 g6.metric("Rho (Put)", f"{res['rho_p']:.4f}")
 
-#  IV SCANNER PANEL 
+# Run Implied Volatility 
 st.subheader("Implied Volatility Scanner")
 
 iv_call = implied_vol_call(S, K, T, r, market_call)
@@ -207,7 +208,7 @@ display_put_iv = f"{iv_put:.4f}" if iv_put > 0.001 else "N/A"
 ivc.markdown(f"<h4>Call IV: <span style='color:{call_color}; font-weight:bold;'>{display_call_iv} ({call_label})</span></h4>", unsafe_allow_html=True)
 ivp.markdown(f"<h4>Put IV: <span style='color:{put_color}; font-weight:bold;'>{display_put_iv} ({put_label})</span></h4>", unsafe_allow_html=True)
 
-#    HEATMAPS 
+# Build asset table grids for visualization
 st.subheader("Option Price Heatmaps")
 
 spot_grid = np.linspace(spot_min_heat, spot_max_heat, grid)
@@ -254,6 +255,6 @@ with hp:
     ax_p.set_ylabel("Volatility (σ)")
     st.pyplot(fig_p)
 
-#  FOOTER 
+# Footer
 st.markdown("---")
 st.caption("Black-Scholes Dashboard | Live Market Feeds | Payoff | Greeks | IV Scanner")
