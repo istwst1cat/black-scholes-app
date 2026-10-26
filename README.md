@@ -7,7 +7,7 @@ An independent quantitative finance dashboard engineered from scratch to evaluat
 * **Live Market Data:** Integrates `yfinance` to pull real-time spot metrics into the pricing loop.
 * **Vectorized Valuation:** Consolidates option formulas into a vectorized function layer to prevent lag.
 * **Newton-Raphson Solver:** Reconstructs market volatility expectations using iterative optimization with convergence guards.
-* **Risk Tables:** Maps discrete spot price movements against shifts in volatility (\(\sigma\)).
+* **Risk Tables:** Maps discrete spot price movements against shifts in volatility.
 
 ## The Mathematical Framework
 
